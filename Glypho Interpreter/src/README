@@ -1,0 +1,71 @@
+Olivotto Alexandra, 336CA 
+
+    Tema LFA 
+ Glypho Interpreter
+
+
+Interpretorul este implementat in java si gandit astfel:
+
+GlyphoReader
+
+->metoda load care citeste fisierul al carui nume este dat ca parametru si
+intoarce sirul de decodat
+
+Clasele tip instructiune
+
+-> sunt denumite conform instructiunii a carei functionalitate o implementeaza
+-> extind o clasa abstracta GlyphoInstruction care intruneste elementele comune 
+(tip, metoda run, codul, index si tagul (identifica perechile de paranteze))
+
+GlyphoDecoder
+
+->o serie de metode utile: crearea unui set din sirul initial care sa nu conti-
+na duplicate, maparea setului la valorile dorite, pastrarea exculsiva a carac-
+terelor valide etc.
+->metoda decode: aici are loc prelucrarea sirului de intrare in urmatoarea or-
+dine: sir initial -> inlaturarea caracterelor din afara intervalului impus 
+-> validarea sirului obtinut (InstructionValidator detaliat mai jos) -> impar-
+tirea sirului in lista de instructiuni -> pentru fiecare instructiune se 
+creaza codul (stergere duplicate + mapare) -> se adauga la lista finala de 
+coduri de instructiuni decodate
+
+InstructionValidator
+
+->metode ajutatoare care verifica daca o instructiune este corecta (ex. de lun-
+gime 4, codul se potriveste cu cel al unei instructiuni din limbaj)
+->toGlyphoInstruction: metoda care creeaza sirul de instructiuni Glypho care va
+fi rulat; in momentul in care sunt intalnite instructiunile LBRACE si RBRACE se
+asigneaza taguri diferite de -1 (valoarea default) pentru a le asocia corespun-
+zator in aceasta metoda se verifica si corectitudinea parantezarii - daca se 
+dovedeste a fi gresita se intoarce o eroare. 
+
+CodeRunner
+
+->parcurge sirul de instructiuni si apeleaza metoda de run a fiecaruia; pentru
+a putea sari de la o instructiune la alta (cazul LBRACE, RBRACE) se folosesc 
+doua variabile statice din clasa Utils pentru a modifica indexul instructiunii 
+de rulat.
+
+Utils
+
+->diversitate de campuri si metode utile statice, care sunt folosite la nevoie
+in orice clasa; de mentionat sunt metodele de conversie, scanner-ul care trebuie
+sa fie acelasi indiferent de instructiunea input care il foloseste, counter-ul 
+pentru instructiunea care da eroarea, jump-urile, metoda de creare a unei 
+instructiuni si metodele de decodare a unei instructiuni formate din numere de pe
+stiva, diferite de cele din GlyphoDecoder deoarce se lucreaza cu BigInteger
+
+
+ErrorHandler/ExceptionHandler
+
+->metode care afiseaza un mesajul standard la iesirea pentru eroare si intrerup
+rularea cu un exit-code corespunzator
+
+GlyphoStack 
+
+->camp static de tip Stiva cu elemente BigInteger
+
+Main
+
+->preia argumentele din linia de comanda
+->apeleaza metodele in ordinea corespunzatoare
